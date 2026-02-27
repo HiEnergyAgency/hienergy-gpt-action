@@ -1,0 +1,175 @@
+openapi: 3.1.0
+info:
+  title: HiEnergy Affiliate Intelligence API
+  description: Find and manage affiliate marketing programs, deals, transactions, and contacts.
+  version: 1.0.0
+servers:
+  - url: https://app.hienergy.ai/api/v1
+paths:
+  /advertisers:
+    get:
+      operationId: getAdvertisers
+      summary: Search for advertisers and affiliate programs.
+      description: Returns a list of advertisers matching the search criteria. Used for finding affiliate programs.
+      parameters:
+        - name: search
+          in: query
+          description: Search term for advertiser name or domain.
+          schema:
+            type: string
+        - name: domain
+          in: query
+          description: Filter by specific domain (e.g., 'nike.com').
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Maximum number of results to return. Default is 20.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        attributes:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            domain:
+                              type: string
+                            commission_rate:
+                              type: string
+                            network_name:
+                              type: string
+
+  /advertisers/{id}:
+    get:
+      operationId: getAdvertiserDetails
+      summary: Get detailed information about a specific advertiser.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+
+  /deals:
+    get:
+      operationId: findDeals
+      summary: Find affiliate deals and offers.
+      parameters:
+        - name: search
+          in: query
+          description: Search term for deals (e.g., 'summer sale', 'fashion').
+          schema:
+            type: string
+        - name: advertiser_id
+          in: query
+          schema:
+            type: string
+        - name: active
+          in: query
+          schema:
+            type: boolean
+        - name: exclusive
+          in: query
+          schema:
+            type: boolean
+        - name: country
+          in: query
+          description: Two-letter country code (e.g., 'US').
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+
+  /transactions:
+    get:
+      operationId: getTransactions
+      summary: Get affiliate transactions and commissions.
+      parameters:
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: advertiser_id
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+
+  /contacts:
+    get:
+      operationId: getContacts
+      summary: Find affiliate partner contacts.
+      parameters:
+        - name: q
+          in: query
+          description: Search term for contact name or email.
+          schema:
+            type: string
+        - name: advertiser_id
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+
+  /status_changes:
+    get:
+      operationId: getStatusChanges
+      summary: Get recent status changes (approvals/rejections) for advertisers.
+      parameters:
+        - name: to_status
+          in: query
+          description: Filter by new status (e.g., 'approved').
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+security:
+  - ApiKeyAuth: []
